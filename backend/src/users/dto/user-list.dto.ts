@@ -1,8 +1,13 @@
 import {UserDto} from "./user.dto";
+import {ApiProperty} from "@nestjs/swagger";
 
 export class UserListDto {
+
+    readonly userDtos: UserDto[]
+
     constructor(
-        readonly userDtos: UserDto[],
+        userDtos: UserDto[],
     ) {
+        this.userDtos = userDtos;
     }
 }

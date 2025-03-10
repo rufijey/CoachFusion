@@ -1,5 +1,15 @@
-import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert} from 'typeorm';
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    CreateDateColumn,
+    UpdateDateColumn,
+    BeforeInsert,
+    BeforeUpdate, ManyToOne, OneToMany, OneToOne
+} from 'typeorm';
 import * as bcrypt from "bcrypt";
+import {RefreshToken} from "../auth/refresh-token.entity";
+import {CoachProfile} from "../coachProfiles/coach-profile.entity";
 
 export enum UserRole {
     USER = 'user',
@@ -11,6 +21,12 @@ export enum UserRole {
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
+
+    @OneToMany(() => RefreshToken, token => token.user)
+    refreshTokens: RefreshToken[];
+
+    @OneToOne(() => CoachProfile, profile => profile.user, { nullable: true })
+    coachProfile: CoachProfile;
 
     @Column({ type: 'varchar', length: 255, nullable: false })
     name: string;
@@ -30,8 +46,4 @@ export class User {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @BeforeInsert()
-    async hashPassword() {
-        this.password = await bcrypt.hash(this.password, 10);
-    }
 }

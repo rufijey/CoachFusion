@@ -6,7 +6,7 @@ import { UpdateProfileDto } from "./dto/update-profile.dto";
 import { CoachDto } from "./dto/coach.dto";
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from "@nestjs/swagger";
 import {CoachFilterDto} from "./dto/coach-filter.dto";
-import {Request, Response} from "express";
+import {Request} from "express";
 
 @ApiTags('Coaches')
 @Controller('api/coaches')
@@ -42,7 +42,7 @@ export class CoachProfilesController {
     @ApiOperation({ summary: 'Update a coach profile' })
     @ApiResponse({ status: 200, description: 'Coach profile updated successfully' })
     async update(@Body() updateProfileDto: UpdateProfileDto, @Req() req: Request): Promise<void> {
-        return this.coachProfilesService.update(updateProfileDto, req.user.coachProfileId);
+        return this.coachProfilesService.update(updateProfileDto, req.user.id);
     }
 
     @Delete()
@@ -51,6 +51,6 @@ export class CoachProfilesController {
     @ApiOperation({ summary: 'Delete a coach profile' })
     @ApiResponse({ status: 200, description: 'Coach profile deleted successfully' })
     async delete(@Req() req: Request): Promise<void> {
-        return this.coachProfilesService.delete(req.user.coachProfileId);
+        return this.coachProfilesService.delete(req.user.id);
     }
 }

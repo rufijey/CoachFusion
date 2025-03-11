@@ -1,5 +1,5 @@
-import {FindOptionsWhere, FindManyOptions, MoreThanOrEqual, LessThanOrEqual, Between} from 'typeorm';
-import {CoachProfile} from './coach-profile.entity';
+import {FindOptionsWhere, FindManyOptions, MoreThanOrEqual, LessThanOrEqual, Between, In} from 'typeorm';
+import {CoachProfile, WorkMode} from './coach-profile.entity';
 import {CoachFilterDto} from "./dto/coach-filter.dto";
 import {Injectable} from "@nestjs/common";
 
@@ -12,6 +12,8 @@ export class CoachFilter {
             specialization: this.specialization.bind(this),
             minExperience: this.minExperience.bind(this),
             maxExperience: this.maxExperience.bind(this),
+            city: this.city.bind(this),
+            workMode: this.workMode.bind(this),
             sortBy: this.sortBy.bind(this),
         };
     }
@@ -57,6 +59,23 @@ export class CoachFilter {
             where.experience = LessThanOrEqual(query.maxExperience);
         }
     }
+
+    private city(query: CoachFilterDto, options: FindManyOptions<CoachProfile>) {
+        if (query.city) {
+            (options.where as FindOptionsWhere<CoachProfile>).city = query.city;
+        }
+    }
+
+    private workMode(query: CoachFilterDto, options: FindManyOptions<CoachProfile>) {
+        if (query.workMode) {
+            const where = options.where as FindOptionsWhere<CoachProfile>;
+            if (query.workMode === WorkMode.BOTH) {
+                return;
+            }
+            where.workMode = In([query.workMode, WorkMode.BOTH]);
+        }
+    }
+
 
     private sortBy(query: CoachFilterDto, options: FindManyOptions<CoachProfile>) {
         if (query.sortBy) {

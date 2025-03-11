@@ -112,7 +112,6 @@ export class AuthController {
     @ApiResponse({status: 200, type: UserDto})
     @ApiBearerAuth()
     async me(@Req() req: Request):Promise<UserDto> {
-        return req.user;
         return this.authService.me(req.user);
     }
 }

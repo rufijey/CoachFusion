@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {Repository} from "typeorm";
 import {CoachProfile} from "./coach-profile.entity";
 import {InjectRepository} from "@nestjs/typeorm";
@@ -10,11 +10,13 @@ import {UpdateProfileDto} from "./dto/update-profile.dto";
 import {CoachDto} from "./dto/coach.dto";
 import {CoachFilter} from "./coach.filter";
 import {CoachFilterDto} from "./dto/coach-filter.dto";
+import {Specialization} from "../specializations/specialization.entity";
 
 @Injectable()
 export class CoachProfilesService {
 
     constructor(@InjectRepository(CoachProfile) private coachProfileRepository: Repository<CoachProfile>,
+                @InjectRepository(Specialization) private specializationRepository: Repository<Specialization>,
                 private portfolioService: PortfoliosService,
                 private userService: UsersService,
                 private coachFilter: CoachFilter
@@ -56,10 +58,16 @@ export class CoachProfilesService {
 
     async create(createProfileDto: CreateProfileDto, userId: number): Promise<void> {
 
+        console.log(createProfileDto)
+
         await this.isExist(userId);
+
+        const specializations =
+            createProfileDto.specializationIds.map(id => this.specializationRepository.create({id: id}));
 
         const profile = this.coachProfileRepository.create({
             ...createProfileDto,
+            specializations,
             user: {id: userId}
         })
 
@@ -73,25 +81,33 @@ export class CoachProfilesService {
 
     }
 
-    async update(updateProfileDto: UpdateProfileDto, coachProfileId: number): Promise<void> {
-        await this.coachProfileRepository.update(coachProfileId, updateProfileDto)
-    }
-
-    async delete(profileId: number): Promise<void> {
+    async update(updateProfileDto: UpdateProfileDto, userId: number): Promise<void> {
         const profile = await this.coachProfileRepository.findOne({
-            where: { id: profileId },
-            relations: {
-                portfolioItems: true,
-                user: true
-            },
+            where: { user: {id: userId} },
         });
 
-        if (profile && profile.portfolioItems) {
+        if (!profile) {
+            throw new NotFoundException(`Coach profile not found`);
+        }
+
+        await this.coachProfileRepository.update(profile.id, updateProfileDto)
+    }
+
+    async delete(userId: number): Promise<void> {
+        const profile = await this.coachProfileRepository.findOne({
+            where: { user: {id: userId} },
+        });
+
+        if (!profile) {
+            throw new NotFoundException(`Coach profile not found`);
+        }
+
+        if (profile.portfolioItems && profile.portfolioItems.length > 0) {
             const portfolioItemIds = profile.portfolioItems.map(item => item.id);
             await this.portfolioService.deleteMany(portfolioItemIds);
         }
 
-        await this.coachProfileRepository.delete(profileId);
+        await this.coachProfileRepository.delete(profile.id);
     }
 
     async isExist(userId: number): Promise<boolean> {

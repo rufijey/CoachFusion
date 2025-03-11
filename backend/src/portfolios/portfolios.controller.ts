@@ -34,7 +34,7 @@ export class PortfoliosController {
     )
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Create a new portfolio item' })
-    @ApiResponse({ status: 201, type: PortfolioItemDto })
+    @ApiResponse({ status: 201, description: 'Portfolio item created' })
     create(
         @UploadedFiles() images: Express.Multer.File[],
         @Body() createPortfolioRequestDto: CreatePortfolioRequestDto,

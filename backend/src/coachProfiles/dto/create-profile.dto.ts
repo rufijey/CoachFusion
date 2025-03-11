@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber, IsArray, ArrayNotEmpty, Min, IsInt } from 'class-validator';
+import { IsString, IsNumber, IsArray, ArrayNotEmpty, Min, IsInt, IsEnum } from 'class-validator';
+import {WorkMode} from "../coach-profile.entity";
 
 export class CreateProfileDto {
 
@@ -17,4 +18,12 @@ export class CreateProfileDto {
     @IsNumber()
     @Min(0)
     readonly experience: number;
+
+    @ApiProperty({ example: 'New York', description: 'City where the coach is located' })
+    @IsString()
+    readonly city: string;
+
+    @ApiProperty({ example: 'both', enum: WorkMode, description: 'Coach work mode: online, offline, or both' })
+    @IsEnum(WorkMode)
+    readonly workMode: WorkMode;
 }

@@ -30,12 +30,11 @@ export class AuthService {
 
     async register(registerDto: RegisterDto, fingerprint: string): Promise<TokensDto> {
         if (await this.userService.isExists(registerDto.email)) {
-            const userDto = new CreateUserDto(registerDto.email, registerDto.password, registerDto.name);
-            const user = await this.userService.create(userDto);
-            return this.generateTokens(user, fingerprint);
-        }else {
             throw new HttpException('A user with this email exists', HttpStatus.BAD_REQUEST);
         }
+        const userDto = new CreateUserDto(registerDto.email, registerDto.password, registerDto.name);
+        const user = await this.userService.create(userDto);
+        return this.generateTokens(user, fingerprint);
     }
 
     async refresh(oldRefreshToken: string, fingerprint: string): Promise<TokensDto> {
@@ -69,7 +68,7 @@ export class AuthService {
         if (!decodedUser){
             throw new UnauthorizedException('unauthorized');
         }
-        return   await this.userService.getWithRelations(decodedUser.id);
+        return await this.userService.getWithRelations(decodedUser.id);
 
     }
 

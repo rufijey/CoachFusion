@@ -1,12 +1,25 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsOptional, IsString, IsNumber, Min, IsEnum, Validate, ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments } from 'class-validator';
-import {IsMaxGreaterThanMin} from "../validators/is-greater.validator";
-
+import {
+    IsOptional,
+    IsString,
+    IsNumber,
+    Min,
+    IsEnum,
+    Validate
+} from 'class-validator';
+import { IsMaxGreaterThanMin } from "../validators/is-greater.validator";
+import { WorkMode } from "../coach-profile.entity";
 
 export enum SortDirection {
     ASC = 'ASC',
     DESC = 'DESC',
+}
+
+export enum SortByField {
+    EXPERIENCE = 'experience',
+    NAME = 'name',
+    CREATED_AT = 'createdAt',
 }
 
 export class CoachFilterDto {
@@ -31,10 +44,20 @@ export class CoachFilterDto {
     @Validate(IsMaxGreaterThanMin)
     maxExperience?: number;
 
-    @ApiPropertyOptional({ description: 'Sort field', example: 'experience' })
+    @ApiPropertyOptional({ example: 'New York', description: 'Coach city' })
     @IsOptional()
     @IsString()
-    sortBy?: string;
+    readonly city?: string;
+
+    @ApiPropertyOptional({ example: 'both', enum: WorkMode, description: 'Coach work mode: online, offline, or both' })
+    @IsOptional()
+    @IsEnum(WorkMode)
+    readonly workMode?: WorkMode;
+
+    @ApiPropertyOptional({ description: 'Sort field', enum: SortByField, example: SortByField.CREATED_AT })
+    @IsOptional()
+    @IsEnum(SortByField)
+    sortBy?: SortByField;
 
     @ApiPropertyOptional({ description: 'Sort direction', enum: SortDirection, example: SortDirection.DESC })
     @IsOptional()

@@ -1,5 +1,4 @@
 import {Module} from '@nestjs/common';
-import {TypeOrmModule} from "@nestjs/typeorm";
 import {UsersModule} from './users/users.module';
 import {ConfigModule} from "@nestjs/config";
 import * as process from "node:process";
@@ -16,6 +15,7 @@ import {Specialization} from "./specializations/specialization.entity";
 import {Image} from "./images/image.entity";
 import {ServeStaticModule} from "@nestjs/serve-static";
 import {join} from 'path'
+import {TypeOrmModule} from "@nestjs/typeorm";
 
 @Module({
     imports: [
@@ -23,12 +23,12 @@ import {join} from 'path'
             envFilePath: '.env',
         }),
         TypeOrmModule.forRoot({
-            type: 'mysql',
-            host: process.env.MYSQL_HOST,
-            port: Number(process.env.MYSQL_PORT),
-            username: process.env.MYSQL_USER,
-            password: process.env.MYSQL_PASSWORD,
-            database: process.env.MYSQL_DATABASE,
+            type: 'postgres',
+            host: process.env.POSTGRES_HOST,
+            port: Number(process.env.POSTGRES_PORT),
+            username: process.env.POSTGRES_USER,
+            password: process.env.POSTGRES_PASSWORD,
+            database: process.env.POSTGRES_DATABASE,
             entities: [User, RefreshToken, CoachProfile, PortfolioItem, Specialization, Image],
             synchronize: true,
         }),

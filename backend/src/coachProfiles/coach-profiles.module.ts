@@ -7,6 +7,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {PortfoliosModule} from "../portfolios/portfolios.module";
 import {AuthModule} from "../auth/auth.module";
 import {CoachFilter} from "./coach.filter";
+import {Specialization} from "../specializations/specialization.entity";
 
 @Module({
   providers: [CoachProfilesService, CoachFilter],
@@ -14,7 +15,7 @@ import {CoachFilter} from "./coach.filter";
   imports: [
       UsersModule,
       PortfoliosModule,
-      TypeOrmModule.forFeature([CoachProfile]),
+      TypeOrmModule.forFeature([CoachProfile, Specialization]),
       AuthModule,
   ]
 })

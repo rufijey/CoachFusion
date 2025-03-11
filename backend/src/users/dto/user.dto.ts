@@ -38,7 +38,7 @@ export class UserDto {
             item.email,
             item.name,
             item.role,
-            CoachProfileDto.create(item.coachProfile)
+            item.coachProfile ? CoachProfileDto.create(item.coachProfile) : undefined,
         );
     }
 }

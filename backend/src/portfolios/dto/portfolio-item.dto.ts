@@ -24,6 +24,6 @@ export class PortfolioItemDto {
         return new PortfolioItemDto(
             item.id,
             item.description,
-            item.images.map((image: any)=> ImageDto.create(image)))
+            item.images.map((image: any)=> ImageDto.create(image)) || [])
     }
 }

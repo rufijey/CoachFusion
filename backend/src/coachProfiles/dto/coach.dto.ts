@@ -2,6 +2,7 @@ import {CoachProfileDto} from "./coach-profile.dto";
 import {SpecializationDto} from "../../specializations/dto/specialization.dto";
 import {PortfolioItemDto} from "../../portfolios/dto/portfolio-item.dto";
 import {ApiProperty} from "@nestjs/swagger";
+import {WorkMode} from "../coach-profile.entity";
 
 export class CoachDto extends CoachProfileDto{
 
@@ -17,10 +18,12 @@ export class CoachDto extends CoachProfileDto{
         specializations:SpecializationDto[],
         portfolioItems:PortfolioItemDto[],
         experience:number,
+        city: string,
+        workMode: WorkMode,
         email:string,
         name:string,
     ) {
-        super(id, description, specializations, portfolioItems, experience);
+        super(id, description, specializations, portfolioItems, experience, city, workMode);
         this.email = email;
         this.name = name;
     }
@@ -32,6 +35,8 @@ export class CoachDto extends CoachProfileDto{
             item.specializations?.map((spec: any) => new SpecializationDto(spec.id, spec.title)) || [],
             item.portfolioItems?.map((pItem: any) => PortfolioItemDto.create(pItem)) || [],
             item.experience,
+            item.city,
+            item.workMode,
             item.user.email,
             item.user.name,
         );

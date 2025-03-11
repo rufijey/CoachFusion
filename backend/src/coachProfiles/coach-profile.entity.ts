@@ -2,15 +2,26 @@ import {
     Entity,
     Column,
     PrimaryGeneratedColumn,
-    ManyToOne,
-    CreateDateColumn,
     OneToOne,
     JoinColumn,
-    ManyToMany, JoinTable, BeforeInsert, BeforeUpdate, OneToMany, UpdateDateColumn
+    ManyToMany,
+    JoinTable,
+    OneToMany,
+    CreateDateColumn,
+    UpdateDateColumn,
+    BeforeInsert,
+    BeforeUpdate
 } from 'typeorm';
 import { User } from '../users/user.entity';
-import {Specialization} from "../specializations/specialization.entity";
-import {PortfolioItem} from "../portfolios/portfolio-item.entity";
+import { Specialization } from "../specializations/specialization.entity";
+import { PortfolioItem } from "../portfolios/portfolio-item.entity";
+
+// Определяем enum для workMode
+export enum WorkMode {
+    ONLINE = 'online',
+    OFFLINE = 'offline',
+    BOTH = 'both',
+}
 
 @Entity()
 export class CoachProfile {
@@ -34,6 +45,16 @@ export class CoachProfile {
     @Column({ type: 'decimal', precision: 4, scale: 1, nullable: false, default: 0 })
     experience: number;
 
+    @Column({ type: 'varchar', length: 255, nullable: false })
+    city: string;
+
+    @Column({
+        type: 'enum',
+        enum: WorkMode,
+        default: WorkMode.BOTH
+    })
+    workMode: WorkMode;
+
     @CreateDateColumn()
     createdAt: Date;
 
@@ -45,5 +66,4 @@ export class CoachProfile {
     roundExperience() {
         this.experience = parseFloat(this.experience.toFixed(1));
     }
-
 }

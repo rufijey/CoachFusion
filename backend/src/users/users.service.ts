@@ -47,14 +47,6 @@ export class UsersService {
         throw new UnauthorizedException({message: 'Incorrect e-mail or password'});
     }
 
-    async getByEmail(email: string): Promise<UserDto> {
-        const user = await this.userRepository.findOne({where: {email}});
-        if (user) {
-            return UserDto.create(user);
-        }
-        throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
-    }
-
     async isExists(email: string): Promise<boolean> {
         const user = await this.userRepository.findOne({where: {email}});
 

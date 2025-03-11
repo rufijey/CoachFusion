@@ -1,6 +1,6 @@
 import {User} from "../user.entity";
 import {ApiProperty} from "@nestjs/swagger";
-import {CoachProfileDto} from "../../coachProfiles/dto/coach-profile.dto";
+import {CoachProfileDto} from "../../coach-profiles/dto/coach-profile.dto";
 
 export class UserDto {
     @ApiProperty({ example: '1', description: 'Id' })

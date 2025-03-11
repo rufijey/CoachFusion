@@ -16,7 +16,6 @@ import { User } from '../users/user.entity';
 import { Specialization } from "../specializations/specialization.entity";
 import { PortfolioItem } from "../portfolios/portfolio-item.entity";
 
-// Определяем enum для workMode
 export enum WorkMode {
     ONLINE = 'online',
     OFFLINE = 'offline',

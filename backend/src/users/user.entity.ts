@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import * as bcrypt from "bcrypt";
 import {RefreshToken} from "../auth/refresh-token.entity";
-import {CoachProfile} from "../coachProfiles/coach-profile.entity";
+import {CoachProfile} from "../coach-profiles/coach-profile.entity";
 
 export enum UserRole {
     USER = 'user',

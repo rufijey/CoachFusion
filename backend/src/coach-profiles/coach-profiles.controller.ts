@@ -1,12 +1,12 @@
 import {Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards} from '@nestjs/common';
 import { CoachProfilesService } from "./coach-profiles.service";
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateProfileDto } from "./dto/create-profile.dto";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
 import { CoachDto } from "./dto/coach.dto";
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from "@nestjs/swagger";
 import {CoachFilterDto} from "./dto/coach-filter.dto";
 import {Request} from "express";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 
 @ApiTags('Coaches')
 @Controller('api/coaches')

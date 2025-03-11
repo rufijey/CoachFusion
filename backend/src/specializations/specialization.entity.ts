@@ -7,7 +7,7 @@ import {
     CreateDateColumn,
     UpdateDateColumn
 } from 'typeorm';
-import {CoachProfile} from "../coachProfiles/coach-profile.entity";
+import {CoachProfile} from "../coach-profiles/coach-profile.entity";
 
 @Entity()
 export class Specialization {

@@ -23,7 +23,7 @@ export class PortfoliosService {
         });
 
         const savedPortfolio = await this.portfolioItemRepository.save(portfolio);
-        const saveImagesDto = new SaveImagesDto(createDto.images, createDto.protocol, createDto.host, savedPortfolio.id);
+        const saveImagesDto = new SaveImagesDto(createDto.image_files, createDto.protocol, createDto.host, savedPortfolio.id);
         await this.imagesService.save(saveImagesDto);
     }
 
@@ -97,9 +97,9 @@ export class PortfoliosService {
             await this.imagesService.delete(updateDto.imageIdsForDelete);
         }
 
-        if (updateDto.images) {
+        if (updateDto.image_files) {
             const saveImageDto = new SaveImagesDto(
-                updateDto.images,
+                updateDto.image_files,
                 updateDto.protocol,
                 updateDto.host,
                 updateDto.id);

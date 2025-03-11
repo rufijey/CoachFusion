@@ -1,5 +1,5 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
-import {Repository} from "typeorm";
+import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
+import {In, Repository} from "typeorm";
 import {CoachProfile} from "./coach-profile.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {CreateProfileDto} from "./dto/create-profile.dto";
@@ -57,10 +57,9 @@ export class CoachProfilesService {
 
 
     async create(createProfileDto: CreateProfileDto, userId: number): Promise<void> {
-
-        console.log(createProfileDto)
-
-        await this.isExist(userId);
+        if (await this.isExist(userId)){
+            throw new ConflictException("Profile already exists");
+        }
 
         const specializations =
             createProfileDto.specializationIds.map(id => this.specializationRepository.create({id: id}));
@@ -83,15 +82,25 @@ export class CoachProfilesService {
 
     async update(updateProfileDto: UpdateProfileDto, userId: number): Promise<void> {
         const profile = await this.coachProfileRepository.findOne({
-            where: { user: {id: userId} },
+            where: { user: { id: userId } },
         });
 
         if (!profile) {
             throw new NotFoundException(`Coach profile not found`);
         }
 
-        await this.coachProfileRepository.update(profile.id, updateProfileDto)
+        let specializations: Specialization[] = []
+        if (updateProfileDto.specializationIds && updateProfileDto.specializationIds.length > 0) {
+            specializations = updateProfileDto.specializationIds.map(id => this.specializationRepository.create({id: id}))
+        }
+
+        profile.specializations = specializations;
+        Object.assign(profile, updateProfileDto);
+
+        await this.coachProfileRepository.save(profile);
+
     }
+
 
     async delete(userId: number): Promise<void> {
         const profile = await this.coachProfileRepository.findOne({

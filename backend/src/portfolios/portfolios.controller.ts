@@ -48,7 +48,7 @@ export class PortfoliosController {
             req.user.coachProfileId,
             images,
             protocol,
-            host
+            host,
         );
 
         return this.portfoliosService.create(createDto);

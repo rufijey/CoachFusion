@@ -11,7 +11,7 @@ import {
 import { User } from '../users/user.entity';
 import {Image} from "../images/image.entity";
 import {text} from "express";
-import {CoachProfile} from "../coachProfiles/coach-profile.entity";
+import {CoachProfile} from "../coach-profiles/coach-profile.entity";
 
 @Entity()
 export class PortfolioItem {

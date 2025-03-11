@@ -5,8 +5,6 @@ import * as process from "node:process";
 import {User} from "./users/user.entity";
 import { AuthModule } from './auth/auth.module';
 import {RefreshToken} from "./auth/refresh-token.entity";
-import { CoachProfilesModule } from './coachProfiles/coach-profiles.module';
-import {CoachProfile} from "./coachProfiles/coach-profile.entity";
 import {PortfoliosModule} from "./portfolios/portfolios.module";
 import { ImagesModule } from './images/images.module';
 import { SpecializationsModule } from './specializations/specializations.module';
@@ -16,6 +14,8 @@ import {Image} from "./images/image.entity";
 import {ServeStaticModule} from "@nestjs/serve-static";
 import {join} from 'path'
 import {TypeOrmModule} from "@nestjs/typeorm";
+import {CoachProfile} from "./coach-profiles/coach-profile.entity";
+import {CoachProfilesModule} from "./coach-profiles/coach-profiles.module";
 
 @Module({
     imports: [

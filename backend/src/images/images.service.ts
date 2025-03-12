@@ -17,9 +17,7 @@ export class ImagesService {
 
     async save(
         saveImagesDto: SaveImagesDto,
-    ):Promise<ImageDto[]> {
-
-        const savedImages: Image[] = [];
+    ):Promise<void> {
 
         for (const image of saveImagesDto.images) {
             const filePath = `/images/${image.filename}`;
@@ -32,10 +30,8 @@ export class ImagesService {
             });
 
             await this.imageRepository.save(newImage);
-            savedImages.push(newImage);
         }
 
-        return savedImages.map(image=> new ImageDto(image.id, image.url, image.path));
     }
 
     async delete(ids: number[]): Promise<void> {

@@ -5,5 +5,5 @@ export class UpdateSpecializationDto {
     @ApiProperty({example: 'bodybuilding', description: 'specialization title'})
     @IsString()
     @IsOptional()
-    title?: string;
+    title: string;
 }

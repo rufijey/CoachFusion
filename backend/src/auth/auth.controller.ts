@@ -19,7 +19,7 @@ import {ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse} from "@nestjs/swagg
 import {JwtAuthGuard} from "./jwt-auth.guard";
 import {UserTokenDto} from "./dto/user-token.dto";
 import {UserDto} from "../users/dto/user.dto";
-import {RefreshTokenInterceptor} from "./refresh-token.intersceptor";
+import {RefreshTokenInterceptor} from "./refresh-token.interceptor";
 
 @Controller('api/auth')
 export class AuthController {
@@ -108,9 +108,9 @@ export class AuthController {
 
     @Get('me')
     @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
     @ApiOperation({summary: 'Get user data'})
     @ApiResponse({status: 200, type: UserDto})
-    @ApiBearerAuth()
     async me(@Req() req: Request):Promise<UserDto> {
         return this.authService.me(req.user);
     }

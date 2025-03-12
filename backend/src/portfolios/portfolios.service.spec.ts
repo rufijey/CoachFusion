@@ -46,7 +46,7 @@ describe('PortfoliosService', () => {
 
             jest.spyOn(portfolioRepository, 'create').mockReturnValue(portfolio as PortfolioItem);
             jest.spyOn(portfolioRepository, 'save').mockResolvedValue(portfolio as PortfolioItem);
-            jest.spyOn(imagesService, 'save').mockResolvedValue([]);
+            jest.spyOn(imagesService, 'save').mockResolvedValue();
 
             await service.create(dto);
 

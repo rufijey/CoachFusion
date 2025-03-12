@@ -46,17 +46,24 @@ describe('ImagesService', () => {
                 portfolioItemId: 1,
             };
 
-            const savedImage = new Image();
-            savedImage.id = 1;
-            savedImage.path = '/images/test.jpg';
-            savedImage.url = 'http://localhost/images/test.jpg';
+            const savedImage = {
+                id: 1,
+                path: '/images/test.jpg',
+                url: 'http://localhost/images/test.jpg',
+                portfolioItem: { id: 1 },
+            } as Image;
 
             jest.spyOn(imageRepository, 'create').mockReturnValue(savedImage);
             jest.spyOn(imageRepository, 'save').mockResolvedValue(savedImage);
 
-            const result = await service.save(saveImagesDto);
+            await service.save(saveImagesDto);
 
-            expect(result).toEqual([new ImageDto(1, savedImage.url, savedImage.path)]);
+            expect(imageRepository.create).toHaveBeenCalledWith({
+                path: savedImage.path,
+                url: savedImage.url,
+                portfolioItem: { id: saveImagesDto.portfolioItemId },
+            });
+            expect(imageRepository.save).toHaveBeenCalledWith(savedImage);
         });
     });
 

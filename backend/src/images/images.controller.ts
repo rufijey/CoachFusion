@@ -20,7 +20,7 @@ export class ImagesController {
         @UploadedFiles() images: Express.Multer.File[],
         @Req() req: Request,
         @Body() {portfolioItemId}:{portfolioItemId:number},
-    ): Promise<ImageDto[]> {
+    ): Promise<void> {
         const saveImagesDto = new SaveImagesDto(images, req.protocol, req.host, portfolioItemId);
         return this.imagesService.save(saveImagesDto);
     }

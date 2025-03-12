@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete, NotFoundException, Patch } from '@nestjs/common';
+import {Controller, Get, Post, Body, Param, Delete, NotFoundException, Patch, UseGuards} from '@nestjs/common';
 import { SpecializationsService } from './specializations.service';
 import { CreateSpecializationDto } from './dto/create-specialization.dto';
 import { UpdateSpecializationDto } from './dto/update-specialization.dto';
 import { SpecializationDto } from './dto/specialization.dto';
-import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {Roles} from "../auth/roles-auth.decorator";
+import {RolesGuard} from "../auth/roles.guard";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 
 @ApiTags('Specializations')
 @Controller('api/specializations')
@@ -11,9 +14,13 @@ export class SpecializationsController {
     constructor(private readonly specializationsService: SpecializationsService) {}
 
     @Post()
+    @UseGuards(JwtAuthGuard)
+    @Roles('admin')
+    @UseGuards(RolesGuard)
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Create specialization' })
-    @ApiResponse({ status: 201, description: 'Specialization successfully created', type: SpecializationDto })
-    create(@Body() createSpecializationDto: CreateSpecializationDto): Promise<SpecializationDto> {
+    @ApiResponse({ status: 201, description: 'Specialization successfully created'})
+    create(@Body() createSpecializationDto: CreateSpecializationDto): Promise<void> {
         return this.specializationsService.create(createSpecializationDto);
     }
 
@@ -25,6 +32,10 @@ export class SpecializationsController {
     }
 
     @Patch(':id')
+    @UseGuards(JwtAuthGuard)
+    @Roles('admin')
+    @UseGuards(RolesGuard)
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Update specialization by ID' })
     @ApiResponse({ status: 200, description: 'Specialization successfully updated'})
     update(@Param('id') id: number, @Body() updateSpecializationDto: UpdateSpecializationDto): Promise<void> {
@@ -32,6 +43,10 @@ export class SpecializationsController {
     }
 
     @Delete(':id')
+    @UseGuards(JwtAuthGuard)
+    @Roles('admin')
+    @UseGuards(RolesGuard)
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Delete specialization by ID' })
     @ApiResponse({ status: 204, description: 'Specialization successfully deleted' })
     async remove(@Param('id') id: number): Promise<void> {

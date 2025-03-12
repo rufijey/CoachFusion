@@ -2,7 +2,7 @@ import {Body, Controller, Get, HttpException, HttpStatus, Param, Post, UseGuards
 import {UsersService} from "./users.service";
 import {CreateUserDto} from "./dto/create-user.dto";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import {Role} from "../auth/roles-auth.decorator";
+import {Roles} from "../auth/roles-auth.decorator";
 import {RolesGuard} from "../auth/roles.guard";
 import {UserDto} from "./dto/user.dto";
 import {User} from "./user.entity";
@@ -17,7 +17,7 @@ export class UsersController {
     }
 
     @Get()
-    @Role('admin')
+    @Roles('admin')
     @UseGuards(RolesGuard)
     getAll(): Promise<UserDto[]> {
         return this.usersService.getAll();

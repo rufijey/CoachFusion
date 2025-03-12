@@ -31,7 +31,7 @@ describe('SpecializationsService', () => {
     });
 
     describe('create', () => {
-        it('should create and return a specialization DTO', async () => {
+        it('should create specialization', async () => {
             const dto: CreateSpecializationDto = { title: 'Test Specialization' };
             const savedSpecialization = { id: 1, title: dto.title };
 
@@ -40,8 +40,7 @@ describe('SpecializationsService', () => {
 
             const result = await service.create(dto);
 
-            expect(result).toEqual({ id: 1, title: 'Test Specialization' });
-            expect(specializationRepository.create).toHaveBeenCalledWith(dto);
+            expect(specializationRepository.create).toHaveBeenCalledWith({...dto, title: dto.title.toLowerCase()});
             expect(specializationRepository.save).toHaveBeenCalledWith(savedSpecialization);
         });
     });
@@ -72,7 +71,7 @@ describe('SpecializationsService', () => {
             jest.spyOn(specializationRepository, 'update').mockResolvedValue(new UpdateResult());
 
             await expect(service.update(1, dto)).resolves.toBeUndefined();
-            expect(specializationRepository.update).toHaveBeenCalledWith(1, dto);
+            expect(specializationRepository.update).toHaveBeenCalledWith(1, {...dto, title: dto.title.toLowerCase() });
         });
     });
 

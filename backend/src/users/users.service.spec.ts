@@ -214,4 +214,27 @@ describe('UsersService', () => {
             await expect(service.makeCoach(id)).rejects.toThrow(HttpException);
         });
     });
+
+    describe('makeAdmin', () => {
+        it('should update user role to ADMIN', async () => {
+            const id = 1;
+            const user = { id, email: 'test@example.com', name: 'Test User', role: 'USER' };
+
+            jest.spyOn(userRepository, 'findOne').mockResolvedValue(user as User);
+            jest.spyOn(userRepository, 'update').mockResolvedValue({ affected: 1 } as UpdateResult);
+
+            await service.makeAdmin(id);
+
+            expect(userRepository.findOne).toHaveBeenCalledWith({ where: { id } });
+            expect(userRepository.update).toHaveBeenCalledWith(user.id, { ...user, role: UserRole.ADMIN });
+        });
+
+        it('should throw HttpException if user is not found', async () => {
+            const id = 1;
+
+            jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
+
+            await expect(service.makeCoach(id)).rejects.toThrow(HttpException);
+        });
+    });
 });

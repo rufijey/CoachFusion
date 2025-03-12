@@ -92,4 +92,14 @@ export class UsersService {
 
         await this.userRepository.update(user.id, user);
     }
+
+    async makeAdmin(id: number): Promise<void> {
+        const user = await this.userRepository.findOne({where: {id}});
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+        }
+        user.role = UserRole.ADMIN;
+
+        await this.userRepository.update(user.id, user);
+    }
 }

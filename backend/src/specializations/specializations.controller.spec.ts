@@ -4,8 +4,13 @@ import { SpecializationsService } from './specializations.service';
 import { CreateSpecializationDto } from './dto/create-specialization.dto';
 import { UpdateSpecializationDto } from './dto/update-specialization.dto';
 import { SpecializationDto } from './dto/specialization.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Reflector } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
+import { ExecutionContext } from '@nestjs/common';
 
-describe('SpecializationsController', () => {
+describe('SpecializationsController (with Guards)', () => {
     let specializationsController: SpecializationsController;
     let specializationsService: SpecializationsService;
 
@@ -20,6 +25,9 @@ describe('SpecializationsController', () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [SpecializationsController],
             providers: [
+                SpecializationsService,
+                JwtService,
+                Reflector,
                 {
                     provide: SpecializationsService,
                     useValue: mockSpecializationsService,
@@ -36,14 +44,13 @@ describe('SpecializationsController', () => {
     });
 
     describe('create', () => {
-        it('should create a specialization', async () => {
+        it('should create a specialization if user is authorized', async () => {
             const createSpecializationDto: CreateSpecializationDto = { title: 'Frontend Developer' };
             const specialization: SpecializationDto = { id: 1, title: 'Frontend Developer' };
 
             mockSpecializationsService.create.mockResolvedValue(specialization);
 
             await expect(specializationsController.create(createSpecializationDto)).resolves.toEqual(specialization);
-
             expect(mockSpecializationsService.create).toHaveBeenCalledWith(createSpecializationDto);
         });
     });
@@ -58,32 +65,29 @@ describe('SpecializationsController', () => {
             mockSpecializationsService.findAll.mockResolvedValue(specializations);
 
             await expect(specializationsController.findAll()).resolves.toEqual(specializations);
-
             expect(mockSpecializationsService.findAll).toHaveBeenCalled();
         });
     });
 
     describe('update', () => {
-        it('should update a specialization', async () => {
+        it('should update a specialization if user has admin role', async () => {
             const id = 1;
-            const updateSpecializationDto: UpdateSpecializationDto = { title: 'Fullstack Developer' };
+            const updateSpecializationDto: UpdateSpecializationDto = { title: 'bodybuilding' };
 
             mockSpecializationsService.update.mockResolvedValue(undefined);
 
             await expect(specializationsController.update(id, updateSpecializationDto)).resolves.toBeUndefined();
-
             expect(mockSpecializationsService.update).toHaveBeenCalledWith(id, updateSpecializationDto);
         });
     });
 
     describe('remove', () => {
-        it('should delete a specialization', async () => {
+        it('should delete a specialization if user has admin role', async () => {
             const id = 1;
 
             mockSpecializationsService.remove.mockResolvedValue(undefined);
 
             await expect(specializationsController.remove(id)).resolves.toBeUndefined();
-
             expect(mockSpecializationsService.remove).toHaveBeenCalledWith(id);
         });
     });

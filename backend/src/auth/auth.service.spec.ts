@@ -154,6 +154,14 @@ describe('AuthService', () => {
             expect(mockRefreshTokenRepository.save).toHaveBeenCalled();
         });
 
+        it('should throw UnauthorizedException if no refresh token', async () => {
+            const oldRefreshToken = '';
+            const fingerprint = 'some-fingerprint';
+
+            await expect(service.refresh(oldRefreshToken, fingerprint)).rejects.toThrow(UnauthorizedException);
+            await expect(service.refresh(oldRefreshToken, fingerprint)).rejects.toThrow('no refreshToken');
+        });
+
         it('should throw UnauthorizedException if refresh token is expired', async () => {
             const oldRefreshToken = 'old-refresh-token';
             const fingerprint = 'some-fingerprint';
@@ -188,6 +196,14 @@ describe('AuthService', () => {
                 user: { id: storedToken.user.id },
                 fingerprint: storedToken.fingerprint,
             });
+        });
+
+        it('should throw UnauthorizedException if no refresh token', async () => {
+            const refreshToken = '';
+            const fingerprint = 'some-fingerprint';
+
+            await expect(service.logout(refreshToken, fingerprint)).rejects.toThrow(UnauthorizedException);
+            await expect(service.logout(refreshToken, fingerprint)).rejects.toThrow('no refreshToken');
         });
 
         it('should throw UnauthorizedException if refresh token is not found', async () => {

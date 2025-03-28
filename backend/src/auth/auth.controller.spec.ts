@@ -43,7 +43,7 @@ describe('AuthController', () => {
         it('should return tokens', async () => {
             const loginDto: LoginDto = { email: 'test@example.com', password: 'password' };
             const fingerprint = 'test-fingerprint';
-            const tokens = new TokensDto('access-token', 'refresh-token');
+            const tokens = new TokensDto('access-token', 'refresh-token', UserRole.USER);
 
             mockAuthService.login.mockResolvedValue(tokens);
 
@@ -55,7 +55,7 @@ describe('AuthController', () => {
         it('should return tokens', async () => {
             const registerDto: RegisterDto = { email: 'test@example.com', password: 'password', name: 'Test' };
             const fingerprint = 'test-fingerprint';
-            const tokens = new TokensDto('access-token', 'refresh-token');
+            const tokens = new TokensDto('access-token', 'refresh-token', UserRole.USER);
 
             mockAuthService.register.mockResolvedValue(tokens);
 
@@ -67,39 +67,24 @@ describe('AuthController', () => {
         it('should return new tokens', async () => {
             const req: any = { cookies: { refreshToken: 'refresh-token' } };
             const fingerprint = 'test-fingerprint';
-            const tokens = new TokensDto('new-access-token', 'new-refresh-token');
+            const tokens = new TokensDto('new-access-token', 'new-refresh-token', UserRole.USER);
 
             mockAuthService.refresh.mockResolvedValue(tokens);
 
             expect(await authController.refresh(req, fingerprint)).toEqual(tokens);
-        });
-
-        it('should throw UnauthorizedException if no refreshToken', async () => {
-            const req: any = { cookies: {} };
-            const fingerprint = 'test-fingerprint';
-
-            await expect(authController.refresh(req, fingerprint)).rejects.toThrow(UnauthorizedException);
         });
     });
 
     describe('logout', () => {
         it('should call logout and clear cookie', async () => {
             const req: any = { cookies: { refreshToken: 'refresh-token' } };
-            const res: any = { clearCookie: jest.fn() };
+            const res: any = { clearCookie: jest.fn(), send: jest.fn() };
             const fingerprint = 'test-fingerprint';
 
             mockAuthService.logout.mockResolvedValue(undefined);
 
             await authController.logout(req, res, fingerprint);
-            expect(res.clearCookie).toHaveBeenCalledWith('refreshToken', { path: '/api/auth/refresh' });
-        });
-
-        it('should throw BadRequestException if no refreshToken', async () => {
-            const req: any = { cookies: {} };
-            const res: any = { clearCookie: jest.fn() };
-            const fingerprint = 'test-fingerprint';
-
-            await expect(authController.logout(req, res, fingerprint)).rejects.toThrow(BadRequestException);
+            expect(res.clearCookie).toHaveBeenCalledWith('refreshToken', { path: '/' });
         });
     });
 

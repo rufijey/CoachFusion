@@ -1,5 +1,5 @@
-import {ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
-import {ImagesService} from "../images/images.service";
+import { ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {PortfolioImagesService} from "../images/portfolio-images.service";
 import {CreatePortfolioItemDto} from "./dto/create-portfolio-item.dto";
 import {InjectRepository} from "@nestjs/typeorm";
 import {PortfolioItem} from "./portfolio-item.entity";
@@ -11,12 +11,15 @@ import {UpdatePortfolioItemDto} from "./dto/update-portfolio-item.dto";
 @Injectable()
 export class PortfoliosService {
     constructor(
-        private imagesService: ImagesService,
+        private imagesService: PortfolioImagesService,
         @InjectRepository(PortfolioItem) private portfolioItemRepository: Repository<PortfolioItem>
     ) {
     }
 
     async create(createDto: CreatePortfolioItemDto): Promise<void> {
+        if (createDto.coachProfileId === null){
+            throw new UnauthorizedException();
+        }
         const portfolio = this.portfolioItemRepository.create({
             ...createDto,
             coachProfile: {id: createDto.coachProfileId}

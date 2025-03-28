@@ -4,13 +4,13 @@ import {join, resolve} from 'path'
 import {SaveImagesDto} from "./dto/save-images.dto";
 import {InjectRepository} from "@nestjs/typeorm";
 import {In, Repository} from "typeorm";
-import {Image} from "./image.entity";
+import {Image} from "./portfolio-image.entity";
 import { unlink } from 'fs/promises';
 import {ImageDto} from "./dto/image.dto";
 
 
 @Injectable()
-export class ImagesService {
+export class PortfolioImagesService {
 
     constructor(@InjectRepository(Image) private imageRepository: Repository<Image>) {
     }

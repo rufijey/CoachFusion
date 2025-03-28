@@ -35,13 +35,11 @@ export class AuthController {
         example: 'device-fingerprint-12345',
     })
     @ApiOperation({summary: 'Login user'})
-    @ApiResponse({status: 200, type: UserTokenDto})
-    async login(@Body() loginDto: LoginDto,
+    @ApiResponse({status: 200, type: TokensDto})
+    login(@Body() loginDto: LoginDto,
                 @Headers('fingerprint') fingerprint: string): Promise<TokensDto> {
 
-        const tokens = await this.authService.login(loginDto, fingerprint);
-
-        return new TokensDto(tokens.accessToken, tokens.refreshToken);
+        return this.authService.login(loginDto, fingerprint);
     }
 
     @Post('registration')
@@ -53,13 +51,10 @@ export class AuthController {
         example: 'device-fingerprint-12345',
     })
     @ApiOperation({summary: 'Register user'})
-    @ApiResponse({status: 200, type: UserTokenDto})
-    async registration(@Body() registerDto: RegisterDto,
+    @ApiResponse({status: 200, type: TokensDto})
+    registration(@Body() registerDto: RegisterDto,
                        @Headers('fingerprint') fingerprint: string): Promise<TokensDto> {
-
-        const tokens = await this.authService.register(registerDto, fingerprint);
-
-        return new TokensDto(tokens.accessToken, tokens.refreshToken);
+        return this.authService.register(registerDto, fingerprint);
     }
 
     @Post('refresh')
@@ -71,17 +66,12 @@ export class AuthController {
         example: 'device-fingerprint-12345',
     })
     @ApiOperation({summary: 'Refresh tokens'})
-    @ApiResponse({status: 200, type: UserTokenDto})
+    @ApiResponse({status: 200, type: TokensDto})
     async refresh(@Req() req: Request,
                   @Headers('fingerprint') fingerprint: string):Promise<TokensDto> {
         const refreshToken = req.cookies.refreshToken;
-        if (!refreshToken) {
-            throw new UnauthorizedException('no refreshToken');
-        }
 
-        const tokens = await this.authService.refresh(refreshToken, fingerprint);
-
-        return new TokensDto(tokens.accessToken, tokens.refreshToken);
+        return await this.authService.refresh(refreshToken, fingerprint);
     }
 
     @Post('logout')
@@ -97,13 +87,10 @@ export class AuthController {
                  @Res() res: Response,
                  @Headers('fingerprint') fingerprint: string): Promise<void> {
         const refreshToken = req.cookies.refreshToken;
-        if (!refreshToken) {
-            throw new BadRequestException('no refreshToken');
-        }
 
-        await this.authService.logout(refreshToken, fingerprint);
-
-        res.clearCookie('refreshToken', {path: '/api/auth/refresh'});
+        await this.authService.logout(refreshToken, fingerprint)
+        res.clearCookie('refreshToken', {path: '/'});
+        res.send();
     }
 
     @Get('me')
@@ -111,7 +98,8 @@ export class AuthController {
     @ApiBearerAuth()
     @ApiOperation({summary: 'Get user data'})
     @ApiResponse({status: 200, type: UserDto})
-    async me(@Req() req: Request):Promise<UserDto> {
+    me(@Req() req: Request):Promise<UserDto> {
+
         return this.authService.me(req.user);
     }
 }

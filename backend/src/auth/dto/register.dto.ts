@@ -8,21 +8,21 @@ export class RegisterDto {
     @IsEmail()
     readonly email: string;
 
-    @ApiProperty({example: 'password123', description: 'Password'})
-    @IsString()
-    readonly password: string;
-
     @ApiProperty({ example: 'username', description: 'Username' })
     @IsString()
     readonly name: string;
 
+    @ApiProperty({example: 'password123', description: 'Password'})
+    @IsString()
+    readonly password: string;
+
     constructor(
         email: string,
-        password: string,
         name: string,
+        password: string,
     ) {
         this.email = email;
-        this.password = password;
         this.name = name;
+        this.password = password;
     }
 }

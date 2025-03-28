@@ -9,7 +9,7 @@ import {
     OneToMany, UpdateDateColumn
 } from 'typeorm';
 import { User } from '../users/user.entity';
-import {Image} from "../images/image.entity";
+import {Image} from "../images/portfolio-image.entity";
 import {text} from "express";
 import {CoachProfile} from "../coach-profiles/coach-profile.entity";
 
@@ -21,7 +21,7 @@ export class PortfolioItem {
     @OneToMany(()=>Image, image => image.portfolioItem)
     images: Image[];
 
-    @ManyToOne(() => CoachProfile, profile => profile.portfolioItems)
+    @ManyToOne(() => CoachProfile, profile => profile.portfolioItems, {nullable:false})
     coachProfile: CoachProfile;
 
     @Column({ type: 'text', nullable: true })

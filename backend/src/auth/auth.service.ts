@@ -10,8 +10,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RefreshToken } from './refresh-token.entity';
 import * as crypto from 'crypto';
-import {TokensDto} from "./dto/tokens.dto";
-import {RegisterDto} from "./dto/register.dto";
+import { TokensDto } from './dto/tokens.dto';
+import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -20,8 +20,9 @@ export class AuthService {
         private userService: UsersService,
         private jwtService: JwtService,
         @InjectRepository(RefreshToken)
-        private refreshTokenRepository: Repository<RefreshToken>
-    ) {}
+        private refreshTokenRepository: Repository<RefreshToken>,
+    ) {
+    }
 
     async login(loginDto: LoginDto, fingerprint: string): Promise<TokensDto> {
         const user = await this.userService.validateUser(loginDto.email, loginDto.password);
@@ -38,10 +39,14 @@ export class AuthService {
     }
 
     async refresh(oldRefreshToken: string, fingerprint: string): Promise<TokensDto> {
+        if (!oldRefreshToken) {
+            throw new UnauthorizedException('no refreshToken');
+        }
+
         const storedToken = await this.refreshTokenRepository.findOne(
             {
                 where: { token: oldRefreshToken },
-                relations: { user: true}
+                relations: { user: true },
             });
 
         if (!storedToken || storedToken.expiresAt < new Date()) {
@@ -53,36 +58,47 @@ export class AuthService {
         return this.generateTokens(user, fingerprint);
     }
 
-    async logout(refreshToken: string, fingerprint:string): Promise<void> {
+    async logout(refreshToken: string, fingerprint: string): Promise<void> {
+        if (!refreshToken) {
+            throw new UnauthorizedException('no refreshToken');
+        }
+
         const storedToken = await this.refreshTokenRepository.findOne(
-            { where: { token: refreshToken, fingerprint: fingerprint } });
+            {
+                where: { token: refreshToken, fingerprint: fingerprint },
+                relations: { user: true },
+            });
 
         if (!storedToken) {
             throw new UnauthorizedException('Invalid refresh token');
         }
 
-        await this.refreshTokenRepository.delete({ user: { id: storedToken.user.id }, fingerprint: storedToken.fingerprint });
+        await this.refreshTokenRepository.delete({
+            user: { id: storedToken.user.id },
+            fingerprint: storedToken.fingerprint,
+        });
     }
 
-    async me(decodedUser:any): Promise<UserDto> {
-        if (!decodedUser){
+    async me(decodedUser: any): Promise<UserDto> {
+        if (!decodedUser) {
             throw new UnauthorizedException('unauthorized');
         }
         return await this.userService.getWithRelations(decodedUser.id);
 
     }
 
-    private async generateTokens(user: UserDto, fingerprint: string):Promise<TokensDto> {
+    private async generateTokens(user: UserDto, fingerprint: string): Promise<TokensDto> {
 
         const payload = {
             email: user.email,
             id: user.id,
             role: user.role,
-            coachProfileId: user.coachProfile ? user.coachProfile.id : null };
+            coachProfileId: user.coachProfile ? user.coachProfile.id : null,
+        };
         const accessToken = this.jwtService.sign(payload);
         const refreshToken = await this.createRefreshToken(user, fingerprint);
 
-        return new TokensDto(accessToken, refreshToken);
+        return new TokensDto(accessToken, refreshToken, user.role);
     }
 
     private async createRefreshToken(user: UserDto, fingerprint: string): Promise<string> {
@@ -93,7 +109,7 @@ export class AuthService {
         expiresAt.setDate(expiresAt.getDate() + 7);
 
         const refreshTokenEntity = this.refreshTokenRepository.create(
-            { user: {id: user.id}, token: refreshToken, expiresAt: expiresAt, fingerprint: fingerprint });
+            { user: { id: user.id }, token: refreshToken, expiresAt: expiresAt, fingerprint: fingerprint });
         await this.refreshTokenRepository.save(refreshTokenEntity);
         return refreshToken;
     }

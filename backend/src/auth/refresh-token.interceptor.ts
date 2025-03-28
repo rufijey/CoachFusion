@@ -17,7 +17,7 @@ export class RefreshTokenInterceptor implements NestInterceptor {
                         httpOnly: true,
                         secure: true,
                         sameSite: 'strict',
-                        path: '/api/auth/refresh',
+                        path: '/',
                     });
 
                     delete data.refreshToken;

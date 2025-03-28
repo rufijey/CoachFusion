@@ -36,7 +36,7 @@ describe('RefreshTokenInterceptor', () => {
                     httpOnly: true,
                     secure: true,
                     sameSite: 'strict',
-                    path: '/api/auth/refresh',
+                    path: '/',
                 },
             );
             expect(result).not.toHaveProperty('refreshToken');

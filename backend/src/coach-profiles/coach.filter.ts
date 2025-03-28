@@ -1,7 +1,7 @@
-import {FindOptionsWhere, FindManyOptions, MoreThanOrEqual, LessThanOrEqual, Between, In} from 'typeorm';
-import {CoachProfile, WorkMode} from './coach-profile.entity';
-import {CoachFilterDto} from "./dto/coach-filter.dto";
-import {Injectable} from "@nestjs/common";
+import { FindOptionsWhere, FindManyOptions, MoreThanOrEqual, LessThanOrEqual, Between, In } from 'typeorm';
+import { CoachProfile, WorkMode } from './coach-profile.entity';
+import { CoachFilterDto } from './dto/coach-filter.dto';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CoachFilter {
@@ -19,7 +19,7 @@ export class CoachFilter {
     }
 
     getFilterOptions(filterDto: CoachFilterDto): FindManyOptions<CoachProfile> {
-        const options: FindManyOptions<CoachProfile> = {where: {}};
+        const options: FindManyOptions<CoachProfile> = { where: {} };
 
         for (const key in this.callbacks) {
             if (filterDto[key] !== undefined) {
@@ -33,7 +33,7 @@ export class CoachFilter {
     private specialization(query: CoachFilterDto, options: FindManyOptions<CoachProfile>) {
         if (query.specialization) {
             (options.where as FindOptionsWhere<CoachProfile>).specializations = {
-                id: query.specialization
+                id: query.specialization,
             };
         }
     }
@@ -43,8 +43,7 @@ export class CoachFilter {
 
         if (query.minExperience !== undefined && query.maxExperience !== undefined) {
             where.experience = Between(query.minExperience, query.maxExperience);
-        }
-        else if (query.minExperience !== undefined) {
+        } else if (query.minExperience !== undefined) {
             where.experience = MoreThanOrEqual(query.minExperience);
         }
     }
@@ -80,9 +79,9 @@ export class CoachFilter {
     private sortBy(query: CoachFilterDto, options: FindManyOptions<CoachProfile>) {
         if (query.sortBy) {
             const direction = query.sortDirection?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
-            options.order = {[query.sortBy]: direction};
+            options.order = { [query.sortBy]: direction };
         } else {
-            options.order = {createdAt: 'DESC'};
+            options.order = { createdAt: 'DESC' };
         }
     }
 }

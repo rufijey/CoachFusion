@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ImagesService } from './images.service';
+import { PortfolioImagesService } from './portfolio-images.service';
 import { Repository } from 'typeorm';
-import { Image } from './image.entity';
+import { Image } from './portfolio-image.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { unlink } from 'fs/promises';
@@ -15,13 +15,13 @@ jest.mock('fs/promises', () => ({
 
 
 describe('ImagesService', () => {
-    let service: ImagesService;
+    let service: PortfolioImagesService;
     let imageRepository: Repository<Image>;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
-                ImagesService,
+                PortfolioImagesService,
                 {
                     provide: getRepositoryToken(Image),
                     useClass: Repository,
@@ -29,7 +29,7 @@ describe('ImagesService', () => {
             ],
         }).compile();
 
-        service = module.get<ImagesService>(ImagesService);
+        service = module.get<PortfolioImagesService>(PortfolioImagesService);
         imageRepository = module.get<Repository<Image>>(getRepositoryToken(Image));
     });
 

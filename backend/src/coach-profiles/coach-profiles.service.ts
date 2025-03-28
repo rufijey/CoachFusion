@@ -58,7 +58,7 @@ export class CoachProfilesService {
 
     async create(createProfileDto: CreateProfileDto, userId: number): Promise<void> {
         if (await this.isExist(userId)){
-            throw new ConflictException("Profile already exists");
+            throw new ConflictException("CoachProfilePage already exists");
         }
 
         const specializations =
@@ -93,6 +93,8 @@ export class CoachProfilesService {
         if (updateProfileDto.specializationIds && updateProfileDto.specializationIds.length > 0) {
             specializations = updateProfileDto.specializationIds.map(id => this.specializationRepository.create({id: id}))
         }
+
+        console.log(specializations);
 
         profile.specializations = specializations;
         Object.assign(profile, updateProfileDto);

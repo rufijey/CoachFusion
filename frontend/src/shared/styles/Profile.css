@@ -1,0 +1,33 @@
+.profile_container {
+    margin-top: 32px;
+    padding-bottom: 32px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.paper {
+    padding: 24px;
+    border-radius: 16px;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 4px 12px #dddddd;
+    width: 600px;
+}
+
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.avatarLabel {
+    cursor: pointer;
+}
+
+.fileInput {
+    display: none;
+}

@@ -1,0 +1,19 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 50px;
+
+}
+
+.coach__fusion{
+    margin-top: 40px;
+    font-size: 45px;
+    color: #13789e;
+    font-weight: bold;
+}
+
+.search{
+    margin-right: 10px;
+}

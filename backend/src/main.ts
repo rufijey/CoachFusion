@@ -4,11 +4,18 @@ import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import {join} from "path";
-import {ValidationPipe} from "@nestjs/common";
+import { ValidationPipe } from './pipes/validation.pipe';
 
 async function bootstrap() {
     const PORT = process.env.PORT || 5000;
     const app = await NestFactory.create(AppModule);
+
+    app.enableCors({
+        origin: 'http://localhost:5173',
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'fingerprint'],
+        credentials: true,
+    });
 
     const config = new DocumentBuilder()
         .setTitle('Coach Fusion')

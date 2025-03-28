@@ -10,11 +10,11 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     BeforeInsert,
-    BeforeUpdate
+    BeforeUpdate,
 } from 'typeorm';
 import { User } from '../users/user.entity';
-import { Specialization } from "../specializations/specialization.entity";
-import { PortfolioItem } from "../portfolios/portfolio-item.entity";
+import { Specialization } from '../specializations/specialization.entity';
+import { PortfolioItem } from '../portfolios/portfolio-item.entity';
 
 export enum WorkMode {
     ONLINE = 'online',
@@ -50,7 +50,7 @@ export class CoachProfile {
     @Column({
         type: 'enum',
         enum: WorkMode,
-        default: WorkMode.BOTH
+        default: WorkMode.BOTH,
     })
     workMode: WorkMode;
 

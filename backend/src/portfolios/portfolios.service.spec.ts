@@ -3,25 +3,25 @@ import { PortfoliosService } from './portfolios.service';
 import {DeleteResult, Repository} from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { PortfolioItem } from './portfolio-item.entity';
-import { ImagesService } from '../images/images.service';
+import { PortfolioImagesService } from '../images/portfolio-images.service';
 import { NotFoundException } from '@nestjs/common';
 import { CreatePortfolioItemDto } from './dto/create-portfolio-item.dto';
 import { UpdatePortfolioItemDto } from './dto/update-portfolio-item.dto';
 import { SaveImagesDto } from '../images/dto/save-images.dto';
 import {CoachProfile} from "../coach-profiles/coach-profile.entity";
 
-jest.mock('../images/images.service');
+jest.mock('../images/portfolio-images.service');
 
 describe('PortfoliosService', () => {
     let service: PortfoliosService;
     let portfolioRepository: Repository<PortfolioItem>;
-    let imagesService: ImagesService;
+    let imagesService: PortfolioImagesService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 PortfoliosService,
-                ImagesService,
+                PortfolioImagesService,
                 {
                     provide: getRepositoryToken(PortfolioItem),
                     useClass: Repository,
@@ -31,7 +31,7 @@ describe('PortfoliosService', () => {
 
         service = module.get<PortfoliosService>(PortfoliosService);
         portfolioRepository = module.get<Repository<PortfolioItem>>(getRepositoryToken(PortfolioItem));
-        imagesService = module.get<ImagesService>(ImagesService);
+        imagesService = module.get<PortfolioImagesService>(PortfolioImagesService);
     });
 
     it('should be defined', () => {

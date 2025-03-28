@@ -1,0 +1,38 @@
+
+
+
+.product__nav{
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    font-size: 26px;
+    padding: 10px 10px 10px 10px;
+    border-bottom: 1px solid #bdb5b5;
+    color: #017da8;
+    user-select: none;
+    width: 100%;
+}
+.link{
+    position: relative;
+    cursor: pointer;
+}
+
+.link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 2px;
+    background-color: #017da8;
+    transition: width 0.3s ease;
+    z-index: 1;
+}
+
+.link:hover::after{
+    width: 100%;
+}
+
+.underline{
+    border-bottom: 2px solid #017da8;
+}

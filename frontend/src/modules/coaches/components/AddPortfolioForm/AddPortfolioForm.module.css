@@ -1,0 +1,83 @@
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropzone {
+    border: 1px solid #aeadad;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    margin: 10px 0;
+    border-radius: 6px;
+    background-color: white;
+    min-height: 200px;
+}
+.drz:active{
+    background-color: #abdff3;
+}
+
+.form{
+    max-width: 800px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.preview__container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+.preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.preview__image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.delete {
+    font-size: 20px;
+    cursor: pointer;
+}
+.delete:hover{
+    color: red;
+}
+.delete:active{
+    color: #9e0808;
+}
+.submit_container{
+
+}
+.submit{
+    margin-top: 10px !important;
+}
+
+.dropzone.active {
+    background-color: #9beac2; /* Зеленый цвет при наведении */
+}
+
+.dropzone.reject {
+    background-color: #ff1744; /* Красный цвет при ошибке */
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield; /* Firefox */
+}
+.text{
+    font-size: 20px;
+    color: #1a202c;
+}

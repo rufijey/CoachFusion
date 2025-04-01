@@ -6,7 +6,7 @@ export class CreatePortfolioItemDto {
 
     readonly coachProfileId: number;
 
-    image_files: {filename: string}[];
+    imageFiles: {filename: string}[];
 
     readonly protocol: string;
 
@@ -15,12 +15,12 @@ export class CreatePortfolioItemDto {
     constructor(
         description: string,
         coachProfileId: number,
-        images: {filename: string}[],
+        imageFiles: {filename: string}[],
         protocol: string,
         host: string) {
         this.description = description;
         this.coachProfileId = coachProfileId;
-        this.image_files = images;
+        this.imageFiles = imageFiles;
         this.protocol = protocol;
         this.host = host;
     }

@@ -2,13 +2,15 @@ import { Module } from '@nestjs/common';
 import { PortfolioImagesService } from './portfolio-images.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import { ImagesController } from './images.controller';
-import {Image} from './portfolio-image.entity';
+import {PortfolioImage} from './portfolio-image.entity';
+import { ProfileImage } from './profile-image.entity';
+import { ProfileImagesService } from './profile-images.service';
 
 @Module({
-  providers: [PortfolioImagesService],
-  imports: [TypeOrmModule.forFeature([Image])],
+  providers: [PortfolioImagesService, ProfileImagesService],
+  imports: [TypeOrmModule.forFeature([PortfolioImage, ProfileImage])],
   controllers: [],
-  exports: [PortfolioImagesService],
+  exports: [PortfolioImagesService, ProfileImagesService],
 })
 export class ImagesModule {}
 

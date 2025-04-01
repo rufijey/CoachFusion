@@ -1,30 +1,56 @@
-import {Body, Controller, Get, HttpException, HttpStatus, Param, Post, UseGuards} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    HttpException,
+    HttpStatus,
+    Param,
+    Patch,
+    Post, Req, UploadedFile, UploadedFiles,
+    UseGuards,
+    UseInterceptors,
+} from '@nestjs/common';
 import {UsersService} from "./users.service";
-import {CreateUserDto} from "./dto/create-user.dto";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import {Roles} from "../auth/roles-auth.decorator";
-import {RolesGuard} from "../auth/roles.guard";
-import {UserDto} from "./dto/user.dto";
-import {User} from "./user.entity";
+import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { imageSaveOptions } from '../images/image-save.options';
+import { Request } from 'express';
+import { UpdateUserRequestDto } from './dto/update-user-request.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { ValidationPipe } from '../pipes/validation.pipe';
 
 @Controller('api/users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
-    @Post()
-    create(@Body() createUserDto: CreateUserDto): Promise<UserDto> {
-        return this.usersService.create(createUserDto);
+    @Patch()
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @UseInterceptors(
+        FilesInterceptor('image', 1, imageSaveOptions)
+    )
+    @ApiOperation({ summary: 'Update user' })
+    @ApiResponse({ status: 200, description: 'User updated' })
+    @ApiConsumes('multipart/form-data')
+    update(
+        @UploadedFiles() image: Express.Multer.File[],
+        @Body() updateUserRequestDto: UpdateUserRequestDto,
+        @Req() req: Request
+    ) {
+
+        const protocol = req.protocol;
+        const host = req.host;
+        const updateDto = new UpdateUserDto(
+            req.user.id,
+            protocol,
+            host,
+            updateUserRequestDto.email,
+            updateUserRequestDto.password,
+            updateUserRequestDto.name,
+            image[0]
+        );
+        return this.usersService.update(updateDto);
     }
 
-    @Get()
-    @Roles('admin')
-    @UseGuards(RolesGuard)
-    getAll(): Promise<UserDto[]> {
-        return this.usersService.getAll();
-    }
-
-    @Get(':id')
-    getById(@Param('id') id:number):Promise<UserDto> {
-        return this.usersService.getById(id);
-    }
 }

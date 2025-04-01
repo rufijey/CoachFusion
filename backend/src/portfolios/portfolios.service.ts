@@ -4,7 +4,7 @@ import {CreatePortfolioItemDto} from "./dto/create-portfolio-item.dto";
 import {InjectRepository} from "@nestjs/typeorm";
 import {PortfolioItem} from "./portfolio-item.entity";
 import {In, Repository} from "typeorm";
-import {SaveImagesDto} from "../images/dto/save-images.dto";
+import {SavePortfolioImagesDto} from "../images/dto/save-portfolio-images.dto";
 import {PortfolioItemDto} from "./dto/portfolio-item.dto";
 import {UpdatePortfolioItemDto} from "./dto/update-portfolio-item.dto";
 
@@ -26,7 +26,7 @@ export class PortfoliosService {
         });
 
         const savedPortfolio = await this.portfolioItemRepository.save(portfolio);
-        const saveImagesDto = new SaveImagesDto(createDto.image_files, createDto.protocol, createDto.host, savedPortfolio.id);
+        const saveImagesDto = new SavePortfolioImagesDto(createDto.imageFiles, createDto.protocol, createDto.host, savedPortfolio.id);
         await this.imagesService.save(saveImagesDto);
     }
 
@@ -100,9 +100,9 @@ export class PortfoliosService {
             await this.imagesService.delete(updateDto.imageIdsForDelete);
         }
 
-        if (updateDto.image_files) {
-            const saveImageDto = new SaveImagesDto(
-                updateDto.image_files,
+        if (updateDto.imageFiles) {
+            const saveImageDto = new SavePortfolioImagesDto(
+                updateDto.imageFiles,
                 updateDto.protocol,
                 updateDto.host,
                 updateDto.id);
@@ -115,7 +115,6 @@ export class PortfoliosService {
     async areImagesFromPortfolio(portfolioId: number, imageIds: number[]): Promise<boolean> {
 
         const images = await this.imagesService.getByPortfolioId(portfolioId);
-
 
         const portfolioImageIds = images.map(image => image.id);
 

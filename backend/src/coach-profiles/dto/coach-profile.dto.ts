@@ -15,10 +15,10 @@ export class CoachProfileDto {
     @ApiProperty({example: 'I am coach, I have...', description: 'description where coach tell about himself'})
     readonly description: string;
 
-    @ApiProperty({example: '[{id: 1, title: bodybuilding}]', description: 'coach specializations'})
+    @ApiProperty({example: [SpecializationDto], description: 'coach specializations'})
     readonly specializations: SpecializationDto[];
 
-    @ApiProperty({example: '[PortfolioItemDto]', description: 'portfolio items'})
+    @ApiProperty({example: [PortfolioItemDto], description: 'portfolio items'})
     readonly portfolioItems: PortfolioItemDto[];
 
     @ApiProperty({example: '3.0', description: 'coach experience'})

@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Post, Req, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { PortfolioImagesService } from './portfolio-images.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { SaveImagesDto } from './dto/save-images.dto';
+import { SavePortfolioImagesDto } from './dto/save-portfolio-images.dto';
 import { imageSaveOptions } from './image-save.options';
 import { Request } from 'express';
 import { ImageIdsListDto } from './dto/image-ids-list.dto';
@@ -22,7 +22,7 @@ export class ImagesController {
         @Req() req: Request,
         @Body() { portfolioItemId }: { portfolioItemId: number },
     ): Promise<void> {
-        const saveImagesDto = new SaveImagesDto(images, req.protocol, req.host, portfolioItemId);
+        const saveImagesDto = new SavePortfolioImagesDto(images, req.protocol, req.host, portfolioItemId);
         return this.imagesService.save(saveImagesDto);
     }
 

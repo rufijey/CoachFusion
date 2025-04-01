@@ -1,13 +1,15 @@
 import {Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn, CreateDateColumn} from 'typeorm';
 import {PortfolioItem} from "../portfolios/portfolio-item.entity";
+import { User } from '../users/user.entity';
 
 @Entity()
-export class PortfolioImage {
+export class ProfileImage {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(()=>PortfolioItem, item => item.images, {nullable:false})
-    portfolioItem: PortfolioItem;
+    @JoinColumn()
+    @ManyToOne(()=>User, user => user.profileImage, {nullable:false})
+    user: User;
 
     @Column()
     path: string;

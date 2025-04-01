@@ -1,6 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
 
-export class SaveImagesDto {
+export class SavePortfolioImagesDto {
 
     @ApiProperty({ example: '[{filename: 123.jpg}]', description: 'image files' })
     images: {filename: string}[];

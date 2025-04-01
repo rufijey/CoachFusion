@@ -14,7 +14,7 @@ import { PortfoliosService } from './portfolios.service';
 import { CreatePortfolioItemDto } from './dto/create-portfolio-item.dto';
 import { UpdatePortfolioItemDto } from './dto/update-portfolio-item.dto';
 import { PortfolioItemDto } from './dto/portfolio-item.dto';
-import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {FilesInterceptor} from "@nestjs/platform-express";
 import {imageSaveOptions} from "../images/image-save.options";
 import {UpdatePortfolioRequestDto} from "./dto/update-portfolio-request.dto";
@@ -35,6 +35,7 @@ export class PortfoliosController {
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Create a new portfolio item' })
     @ApiResponse({ status: 201, description: 'Portfolio item created' })
+    @ApiConsumes('multipart/form-data')
     create(
         @UploadedFiles() images: Express.Multer.File[],
         @Body() createPortfolioRequestDto: CreatePortfolioRequestDto,
@@ -88,6 +89,7 @@ export class PortfoliosController {
     )
     @ApiOperation({ summary: 'Update portfolio item' })
     @ApiResponse({ status: 200, description: 'Portfolio item updated' })
+    @ApiConsumes('multipart/form-data')
     update(
         @UploadedFiles() images: Express.Multer.File[],
         @Param('id') id: number,

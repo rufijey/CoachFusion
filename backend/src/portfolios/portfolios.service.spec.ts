@@ -7,7 +7,7 @@ import { PortfolioImagesService } from '../images/portfolio-images.service';
 import { NotFoundException } from '@nestjs/common';
 import { CreatePortfolioItemDto } from './dto/create-portfolio-item.dto';
 import { UpdatePortfolioItemDto } from './dto/update-portfolio-item.dto';
-import { SaveImagesDto } from '../images/dto/save-images.dto';
+import { SavePortfolioImagesDto } from '../images/dto/save-portfolio-images.dto';
 import {CoachProfile} from "../coach-profiles/coach-profile.entity";
 
 jest.mock('../images/portfolio-images.service');
@@ -41,7 +41,7 @@ describe('PortfoliosService', () => {
     describe('create', () => {
         it('should create and save a portfolio', async () => {
             const dto: CreatePortfolioItemDto =
-                { coachProfileId: 1, description: 'description', image_files: [], protocol: 'http', host: 'localhost' };
+                { coachProfileId: 1, description: 'description', imageFiles: [], protocol: 'http', host: 'localhost' };
             const portfolio = { id: 1, description: 'description', coachProfile: { id: 1 } };
 
             jest.spyOn(portfolioRepository, 'create').mockReturnValue(portfolio as PortfolioItem);
@@ -52,7 +52,7 @@ describe('PortfoliosService', () => {
 
             expect(portfolioRepository.create).toHaveBeenCalledWith({ ...dto, coachProfile: { id: dto.coachProfileId } });
             expect(portfolioRepository.save).toHaveBeenCalledWith(portfolio);
-            expect(imagesService.save).toHaveBeenCalledWith(new SaveImagesDto(dto.image_files, dto.protocol, dto.host, portfolio.id));
+            expect(imagesService.save).toHaveBeenCalledWith(new SavePortfolioImagesDto(dto.imageFiles, dto.protocol, dto.host, portfolio.id));
         });
     });
 

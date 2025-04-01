@@ -31,14 +31,20 @@ export interface ICoachProfile {
     workMode: WorkMode;
 }
 
+export interface IImage {
+    path: string;
+    url: string;
+}
+
 export interface IUser {
     id: number;
     name: string;
     email: string;
     password: string;
-    profileImage: string;
+    profileImage: IImage;
     coachProfile?: ICoachProfile;
 }
+
 
 export interface UserState {
     user: IUser | null;

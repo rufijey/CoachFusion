@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { TextField, Button, Avatar} from '@mui/material';
+import { TextField, Button, Avatar } from '@mui/material';
 import Loader from '../../../../shared/components/UI/loader/Loader.tsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../../shared/store/store.ts';
 import { fetchUser, updateUser } from '../../store/userSlice.ts';
+import { UserService } from '../../services/UserService.ts';
 
 interface ImagePreview {
     file: File;
@@ -37,30 +38,25 @@ const Profile: React.FC = () => {
 
     const handleSubmit = async () => {
         if (!user) return;
-        const formData = new FormData();
+        try {
+            await UserService.update({ ...user, profileImage });
+            dispatch(fetchUser());
+        } catch (error) {
 
-        formData.append('name', user.name);
-        formData.append('email', user.email);
-        if (user.password) {
-            formData.append('password', user.password);
         }
-        if (profileImage && profileImage.file) {
-            formData.append('profileImage', profileImage.file);
-        }
-
     };
 
     if (loading) return <Loader />;
     if (!user) return <div></div>;
 
     return (
-        <div className='profile_container'>
-            <div className='paper'>
-                <div className='formContainer'>
-                    <label htmlFor="upload-photo" className='avatarLabel'>
+        <div className="profile_container">
+            <div className="paper">
+                <div className="formContainer">
+                    <label htmlFor="upload-photo" className="avatarLabel">
                         <Avatar
-                            src={(profileImage && profileImage.url) || user.profileImage}
-                            className='avatar'
+                            src={(profileImage && profileImage.url) || user.profileImage.url}
+                            className="avatar"
                             sx={{ width: 100, height: 100 }}
                         />
                     </label>
@@ -68,7 +64,7 @@ const Profile: React.FC = () => {
                         type="file"
                         accept="image/*"
                         onChange={handleFileChange}
-                        className='fileInput'
+                        className="fileInput"
                         id="upload-photo"
                     />
                     <TextField

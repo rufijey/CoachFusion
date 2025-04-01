@@ -11,7 +11,6 @@ const initialState: UserState = {
 export const fetchUser = createAsyncThunk<IUser>('user/fetchUser', async (_, { rejectWithValue }) => {
     try {
         const response = await UserService.getUser();
-        console.log(response.data);
         return response.data;
     } catch (error: any) {
         return rejectWithValue(error.message || 'Failed to fetch user');

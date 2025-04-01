@@ -25,11 +25,17 @@ export class AuthService {
     }
 
     async login(loginDto: LoginDto, fingerprint: string): Promise<TokensDto> {
+        if (!fingerprint) {
+            throw new UnauthorizedException();
+        }
         const user = await this.userService.validateUser(loginDto.email, loginDto.password);
         return this.generateTokens(user, fingerprint);
     }
 
     async register(registerDto: RegisterDto, fingerprint: string): Promise<TokensDto> {
+        if (!fingerprint) {
+            throw new UnauthorizedException();
+        }
         if (await this.userService.isExists(registerDto.email)) {
             throw new HttpException('A user with this email exists', HttpStatus.BAD_REQUEST);
         }
@@ -39,6 +45,9 @@ export class AuthService {
     }
 
     async refresh(oldRefreshToken: string, fingerprint: string): Promise<TokensDto> {
+        if (!fingerprint) {
+            throw new UnauthorizedException();
+        }
         if (!oldRefreshToken) {
             throw new UnauthorizedException('no refreshToken');
         }
@@ -59,6 +68,9 @@ export class AuthService {
     }
 
     async logout(refreshToken: string, fingerprint: string): Promise<void> {
+        if (!fingerprint) {
+            throw new UnauthorizedException();
+        }
         if (!refreshToken) {
             throw new UnauthorizedException('no refreshToken');
         }

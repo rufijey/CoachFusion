@@ -9,6 +9,7 @@ import RegisteredRoute from '../routes/RegisteredRoute.tsx';
 import UnRegisteredRoute from '../routes/UnRegisteredRoute.tsx';
 import CoachProfilePage from '../../pages/coaches/coachProfile/CoachProfilePage.tsx';
 import AddPortfolioPage from '../../pages/coaches/addPortfolio/AddPortfolioPage.tsx';
+import CoachList from '../../modules/coaches/components/Coaches/CoachList.tsx';
 
 
 export const router = createBrowserRouter([
@@ -18,6 +19,10 @@ export const router = createBrowserRouter([
             {
                 path: '/',
                 element: <Main/>
+            },
+            {
+                path: '/coaches',
+                element: <CoachList/>
             },
             {
                 element: <UnRegisteredRoute />,

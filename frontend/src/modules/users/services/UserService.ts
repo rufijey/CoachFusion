@@ -12,6 +12,13 @@ export interface registerData {
     password: string;
 }
 
+export interface userData {
+    email: string;
+    password: string;
+    name: string;
+    profileImage?: { file: File };
+}
+
 export class UserService {
 
     static async login(data: loginData) {
@@ -42,5 +49,17 @@ export class UserService {
 
     static async getUser() {
         return await api.get('/auth/me');
+    }
+
+    static async update(data: userData) {
+        console.log(data);
+        const formData = new FormData();
+        if (data.profileImage) {
+            formData.append('image', data.profileImage.file);
+        }
+        formData.append('name', data.name);
+        formData.append('password', data.password);
+        formData.append('email', data.email);
+        return await api.patch('/users', formData);
     }
 }

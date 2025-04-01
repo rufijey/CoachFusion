@@ -1,16 +1,16 @@
-import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
-import {In, Repository} from "typeorm";
-import {CoachProfile} from "./coach-profile.entity";
-import {InjectRepository} from "@nestjs/typeorm";
-import {CreateProfileDto} from "./dto/create-profile.dto";
-import {PortfoliosService} from "../portfolios/portfolios.service";
-import {UsersService} from "../users/users.service";
-import {UserRole} from "../users/user.entity";
-import {UpdateProfileDto} from "./dto/update-profile.dto";
-import {CoachDto} from "./dto/coach.dto";
-import {CoachFilter} from "./coach.filter";
-import {CoachFilterDto} from "./dto/coach-filter.dto";
-import {Specialization} from "../specializations/specialization.entity";
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { In, Repository } from 'typeorm';
+import { CoachProfile } from './coach-profile.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CreateProfileDto } from './dto/create-profile.dto';
+import { PortfoliosService } from '../portfolios/portfolios.service';
+import { UsersService } from '../users/users.service';
+import { UserRole } from '../users/user.entity';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { CoachDto } from './dto/coach.dto';
+import { CoachFilter } from './coach.filter';
+import { CoachFilterDto } from './dto/coach-filter.dto';
+import { Specialization } from '../specializations/specialization.entity';
 
 @Injectable()
 export class CoachProfilesService {
@@ -19,7 +19,7 @@ export class CoachProfilesService {
                 @InjectRepository(Specialization) private specializationRepository: Repository<Specialization>,
                 private portfolioService: PortfoliosService,
                 private userService: UsersService,
-                private coachFilter: CoachFilter
+                private coachFilter: CoachFilter,
     ) {
     }
 
@@ -29,12 +29,12 @@ export class CoachProfilesService {
                 user: true,
                 specializations: true,
                 portfolioItems: {
-                    images: true
-                }
-            }
+                    images: true,
+                },
+            },
         });
 
-        return coaches.map(coach => CoachDto.create(coach))
+        return coaches.map(coach => CoachDto.create(coach));
 
     }
 
@@ -46,8 +46,8 @@ export class CoachProfilesService {
             user: true,
             specializations: true,
             portfolioItems: {
-                images: true
-            }
+                images: true,
+            },
         };
 
         const coaches = await this.coachProfileRepository.find(options);
@@ -57,25 +57,25 @@ export class CoachProfilesService {
 
 
     async create(createProfileDto: CreateProfileDto, userId: number): Promise<void> {
-        if (await this.isExist(userId)){
-            throw new ConflictException("CoachProfilePage already exists");
+        if (await this.isExist(userId)) {
+            throw new ConflictException('CoachProfilePage already exists');
         }
 
         const specializations =
-            createProfileDto.specializationIds.map(id => this.specializationRepository.create({id: id}));
+            createProfileDto.specializationIds.map(id => this.specializationRepository.create({ id: id }));
 
         const profile = this.coachProfileRepository.create({
             ...createProfileDto,
             specializations,
-            user: {id: userId}
-        })
+            user: { id: userId },
+        });
 
-        await this.coachProfileRepository.save(profile)
+        await this.coachProfileRepository.save(profile);
 
-        const user = await this.userService.getById(userId)
+        const user = await this.userService.getById(userId);
 
         if (user.role === UserRole.USER) {
-            await this.userService.makeCoach(userId)
+            await this.userService.makeCoach(userId);
         }
 
     }
@@ -89,12 +89,10 @@ export class CoachProfilesService {
             throw new NotFoundException(`Coach profile not found`);
         }
 
-        let specializations: Specialization[] = []
+        let specializations: Specialization[] = [];
         if (updateProfileDto.specializationIds && updateProfileDto.specializationIds.length > 0) {
-            specializations = updateProfileDto.specializationIds.map(id => this.specializationRepository.create({id: id}))
+            specializations = updateProfileDto.specializationIds.map(id => this.specializationRepository.create({ id: id }));
         }
-
-        console.log(specializations);
 
         profile.specializations = specializations;
         Object.assign(profile, updateProfileDto);
@@ -103,10 +101,9 @@ export class CoachProfilesService {
 
     }
 
-
     async delete(userId: number): Promise<void> {
         const profile = await this.coachProfileRepository.findOne({
-            where: { user: {id: userId} },
+            where: { user: { id: userId } },
         });
 
         if (!profile) {
@@ -125,9 +122,9 @@ export class CoachProfilesService {
         const profile = this.coachProfileRepository.find({
             where: {
                 user: {
-                    id: userId
-                }
-            }
+                    id: userId,
+                },
+            },
         });
 
         return !!profile;

@@ -10,7 +10,7 @@ export class PortfolioItemDto {
     @ApiProperty({example: 'Its description of this...', description: 'description'})
     readonly description: string;
 
-    @ApiProperty({description: 'images'})
+    @ApiProperty({example:[ImageDto],description: 'images'})
     readonly images: ImageDto[];
 
     constructor(id: number, description: string, images: ImageDto[]) {

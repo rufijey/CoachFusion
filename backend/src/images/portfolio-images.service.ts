@@ -1,10 +1,10 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {diskStorage} from "multer";
 import {join, resolve} from 'path'
-import {SaveImagesDto} from "./dto/save-images.dto";
+import {SavePortfolioImagesDto} from "./dto/save-portfolio-images.dto";
 import {InjectRepository} from "@nestjs/typeorm";
 import {In, Repository} from "typeorm";
-import {Image} from "./portfolio-image.entity";
+import {PortfolioImage} from "./portfolio-image.entity";
 import { unlink } from 'fs/promises';
 import {ImageDto} from "./dto/image.dto";
 
@@ -12,11 +12,11 @@ import {ImageDto} from "./dto/image.dto";
 @Injectable()
 export class PortfolioImagesService {
 
-    constructor(@InjectRepository(Image) private imageRepository: Repository<Image>) {
+    constructor(@InjectRepository(PortfolioImage) private imageRepository: Repository<PortfolioImage>) {
     }
 
     async save(
-        saveImagesDto: SaveImagesDto,
+        saveImagesDto: SavePortfolioImagesDto,
     ):Promise<void> {
 
         for (const image of saveImagesDto.images) {

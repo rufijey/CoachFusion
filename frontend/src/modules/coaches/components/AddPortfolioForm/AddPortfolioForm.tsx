@@ -3,7 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { RxCross2 } from 'react-icons/rx';
 import { TextField, Button } from '@mui/material';
 import cl from './AddPortfolioForm.module.css';
-import { PortfolioService } from '../../../specializations/services/PortfolioService.ts';
+import { PortfolioService } from '../../services/PortfolioService.ts';
 
 interface ImagePreview {
     file: File;

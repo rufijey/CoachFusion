@@ -10,7 +10,7 @@ export class UpdatePortfolioItemDto{
 
     readonly imageIdsForDelete?: number[];
 
-    readonly image_files?: {filename: string}[];
+    readonly imageFiles?: {filename: string}[];
 
     readonly protocol: string;
 
@@ -23,7 +23,7 @@ export class UpdatePortfolioItemDto{
         host: string,
         description?: string,
         imageIdsForDelete?: number[],
-        images?: {filename: string}[],
+        imageFiles?: {filename: string}[],
         ) {
         this.id = id;
         this.userId = userId;
@@ -31,6 +31,6 @@ export class UpdatePortfolioItemDto{
         this.host = host;
         this.description = description;
         this.imageIdsForDelete = imageIdsForDelete;
-        this.image_files = images;
+        this.imageFiles = imageFiles;
     }
 }

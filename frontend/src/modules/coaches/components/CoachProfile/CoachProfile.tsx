@@ -5,9 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../../shared/store/store.ts';
 import { fetchUser } from '../../../users/store/userSlice.ts';
 import { ICoachProfile, ISpecialization, WorkMode } from '../../../users/store/userInterfaces.ts';
-import { SpecializationService } from '../../../specializations/services/SpecializationService.ts';
+import { SpecializationService } from '../../services/SpecializationService.ts';
 import { useNavigate } from 'react-router-dom';
-import { CoachService } from '../../../specializations/services/CoachService.ts';
+import { CoachService } from '../../services/CoachService.ts';
 import CoachPortfolio from '../CoachPortfolio/CoachPortfolio.tsx';
 
 const CoachProfile: React.FC = () => {
@@ -64,7 +64,7 @@ const CoachProfile: React.FC = () => {
         }));
     };
 
-    const handleSaveChanges = async () => {
+    const handleSubmit = async () => {
         try {
             if (coachProfile.id) {
                 const res = await CoachService.update(coachProfile);
@@ -73,6 +73,7 @@ const CoachProfile: React.FC = () => {
                 const res = await CoachService.post(coachProfile);
                 console.log(res);
             }
+            dispatch(fetchUser());
         } catch (error) {
             console.log(error);
         }
@@ -146,7 +147,7 @@ const CoachProfile: React.FC = () => {
                             ))}
                         </Select>
                     </FormControl>
-                    <Button onClick={handleSaveChanges} variant="contained" color="primary">
+                    <Button onClick={handleSubmit} variant="contained" color="primary">
                         {user.coachProfile && user.coachProfile.id ? 'Save Changes' : 'Create Profile'}
                     </Button>
                 </div>

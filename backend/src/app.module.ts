@@ -10,12 +10,13 @@ import { ImagesModule } from './images/images.module';
 import { SpecializationsModule } from './specializations/specializations.module';
 import { PortfolioItem } from './portfolios/portfolio-item.entity';
 import { Specialization } from './specializations/specialization.entity';
-import { Image } from './images/portfolio-image.entity';
+import { PortfolioImage } from './images/portfolio-image.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoachProfile } from './coach-profiles/coach-profile.entity';
 import { CoachProfilesModule } from './coach-profiles/coach-profiles.module';
+import { ProfileImage } from './images/profile-image.entity';
 
 @Module({
     imports: [
@@ -29,14 +30,14 @@ import { CoachProfilesModule } from './coach-profiles/coach-profiles.module';
             username: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.POSTGRES_DATABASE,
-            entities: [User, RefreshToken, CoachProfile, PortfolioItem, Specialization, Image],
+            entities: [User, RefreshToken, CoachProfile, PortfolioItem, Specialization, PortfolioImage, ProfileImage],
             synchronize: true,
         }),
         ServeStaticModule.forRoot({
             rootPath: join(__dirname, '..', 'static'),
         }),
-        UsersModule,
         AuthModule,
+        UsersModule,
         CoachProfilesModule,
         PortfoliosModule,
         ImagesModule,

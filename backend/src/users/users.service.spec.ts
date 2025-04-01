@@ -1,16 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import {Repository, UpdateResult} from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { UsersService } from './users.service';
 import { User, UserRole } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
-import { HttpException, HttpStatus, UnauthorizedException } from '@nestjs/common';
+import { HttpException, UnauthorizedException } from '@nestjs/common';
+import { ProfileImagesService } from '../images/profile-images.service';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { SaveProfileImageDto } from '../images/dto/save-profile-image.dto';
+import { ImageDto } from '../images/dto/image.dto';
+import { CoachProfile } from '../coach-profiles/coach-profile.entity';
+import { ProfileImage } from '../images/profile-image.entity';
 
 describe('UsersService', () => {
     let service: UsersService;
     let userRepository: Repository<User>;
+    let imagesService: ProfileImagesService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -20,13 +27,20 @@ describe('UsersService', () => {
                     provide: getRepositoryToken(User),
                     useClass: Repository,
                 },
+                {
+                    provide: ProfileImagesService,
+                    useValue: {
+                        save: jest.fn(),
+                        delete: jest.fn(),
+                    },
+                },
             ],
         }).compile();
 
         service = module.get<UsersService>(UsersService);
         userRepository = module.get<Repository<User>>(getRepositoryToken(User));
+        imagesService = module.get<ProfileImagesService>(ProfileImagesService);
     });
-
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -51,6 +65,76 @@ describe('UsersService', () => {
             expect(userRepository.create).toHaveBeenCalled();
             expect(userRepository.save).toHaveBeenCalled();
             expect(result).toEqual(userDto);
+        });
+    });
+
+
+    describe('update', () => {
+        it('should throw UnauthorizedException if user is not found', async () => {
+            const updateUserDto: UpdateUserDto = { id: 1, name: 'Updated User', protocol: 'http', host: 'localhost' };
+
+            jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
+
+            await expect(service.update(updateUserDto)).rejects.toThrow(UnauthorizedException);
+        });
+
+        it('should update user without changing profile image', async () => {
+            const updateUserDto: UpdateUserDto = { id: 1, name: 'Updated User', protocol: 'http', host: 'localhost' };
+            const user = {
+                id: 1,
+                name: 'Test User',
+                email: '123@gmail.com',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                password: 'password123',
+                role: UserRole.USER,
+                profileImage: { id: 1 },
+            };
+
+            jest.spyOn(userRepository, 'findOne').mockResolvedValue(user as User);
+            jest.spyOn(userRepository, 'create').mockReturnValue(user as User);
+            jest.spyOn(userRepository, 'update').mockResolvedValue({ affected: 1 } as UpdateResult);
+            jest.spyOn(imagesService, 'delete');
+            jest.spyOn(imagesService, 'save');
+
+            await service.update(updateUserDto);
+
+            expect(imagesService.delete).not.toHaveBeenCalledWith(user.profileImage.id);
+            expect(imagesService.save).not.toHaveBeenCalledWith(expect.any(SaveProfileImageDto));
+            expect(userRepository.update).toHaveBeenCalled();
+        });
+
+        it('should update user and replace profile image', async () => {
+            const updateUserDto: UpdateUserDto = {
+                id: 1,
+                name: 'Updated User',
+                imageFile: { filename: '123.jpg' },
+                protocol: 'http',
+                host: 'localhost',
+            };
+            const user = {
+                id: 1,
+                name: 'Test User',
+                email: '123@gmail.com',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                password: 'password123',
+                role: UserRole.USER,
+                profileImage: { id: 2 }
+            };
+            const newImage: ImageDto = { id: 3, url: 'url', path: 'path' };
+
+            jest.spyOn(userRepository, 'findOne').mockResolvedValue(user as User);
+            jest.spyOn(userRepository, 'create').mockReturnValue({ ...user, profileImage: { id: newImage.id } } as User);
+            jest.spyOn(imagesService, 'delete').mockResolvedValue();
+            jest.spyOn(imagesService, 'save').mockResolvedValue(newImage);
+            jest.spyOn(userRepository, 'update').mockResolvedValue({ affected: 1 } as UpdateResult);
+
+            await service.update(updateUserDto);
+
+            expect(imagesService.delete).toHaveBeenCalledWith(user.profileImage.id);
+            expect(imagesService.save).toHaveBeenCalledWith(expect.any(SaveProfileImageDto));
+            expect(userRepository.update).toHaveBeenCalled();
         });
     });
 
@@ -82,14 +166,23 @@ describe('UsersService', () => {
 
             const result = await service.validateUser(email, password);
 
-            expect(userRepository.findOne).toHaveBeenCalledWith({ where: { email }, relations: { coachProfile: true } });
+            expect(userRepository.findOne).toHaveBeenCalledWith({
+                where: { email },
+                relations: { coachProfile: true },
+            });
             expect(result).toEqual(userDto);
         });
 
         it('should throw UnauthorizedException if password is incorrect', async () => {
             const email = 'test@example.com';
             const password = 'wrongpassword';
-            const user = { id: 1, email, password: await bcrypt.hash('password123', 10), name: 'Test User', role: 'USER' };
+            const user = {
+                id: 1,
+                email,
+                password: await bcrypt.hash('password123', 10),
+                name: 'Test User',
+                role: 'USER',
+            };
 
             jest.spyOn(userRepository, 'findOne').mockResolvedValue(user as User);
 
@@ -147,15 +240,16 @@ describe('UsersService', () => {
             const result = await service.getWithRelations(id);
 
             expect(userRepository.findOne).toHaveBeenCalledWith({
-                where: { id },
-                relations: {
+                where: {id},
+                relations:{
                     coachProfile: {
                         specializations: true,
                         portfolioItems: {
-                            images: true,
-                        },
+                            images: true
+                        }
                     },
-                },
+                    profileImage: true
+                }
             });
             expect(result).toEqual(userDto);
         });

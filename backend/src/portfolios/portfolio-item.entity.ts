@@ -9,7 +9,7 @@ import {
     OneToMany, UpdateDateColumn
 } from 'typeorm';
 import { User } from '../users/user.entity';
-import {Image} from "../images/portfolio-image.entity";
+import {PortfolioImage} from "../images/portfolio-image.entity";
 import {text} from "express";
 import {CoachProfile} from "../coach-profiles/coach-profile.entity";
 
@@ -18,8 +18,8 @@ export class PortfolioItem {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @OneToMany(()=>Image, image => image.portfolioItem)
-    images: Image[];
+    @OneToMany(()=>PortfolioImage, image => image.portfolioItem)
+    images: PortfolioImage[];
 
     @ManyToOne(() => CoachProfile, profile => profile.portfolioItems, {nullable:false})
     coachProfile: CoachProfile;

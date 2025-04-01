@@ -5,11 +5,12 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     BeforeInsert,
-    BeforeUpdate, ManyToOne, OneToMany, OneToOne
+    BeforeUpdate, ManyToOne, OneToMany, OneToOne, JoinColumn,
 } from 'typeorm';
 import * as bcrypt from "bcrypt";
 import {RefreshToken} from "../auth/refresh-token.entity";
 import {CoachProfile} from "../coach-profiles/coach-profile.entity";
+import { ProfileImage } from '../images/profile-image.entity';
 
 export enum UserRole {
     USER = 'user',
@@ -27,6 +28,9 @@ export class User {
 
     @OneToOne(() => CoachProfile, profile => profile.user, { nullable: true })
     coachProfile: CoachProfile;
+
+    @OneToOne(() => ProfileImage, image => image.user, { nullable: true })
+    profileImage: ProfileImage;
 
     @Column({ type: 'varchar', length: 255, nullable: false })
     name: string;

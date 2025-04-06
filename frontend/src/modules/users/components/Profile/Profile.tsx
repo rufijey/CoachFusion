@@ -55,7 +55,7 @@ const Profile: React.FC = () => {
                 <div className="formContainer">
                     <label htmlFor="upload-photo" className="avatarLabel">
                         <Avatar
-                            src={(profileImage && profileImage.url) || user.profileImage.url}
+                            src={(profileImage && profileImage.url) || (user.profileImage && user.profileImage.url)}
                             className="avatar"
                             sx={{ width: 100, height: 100 }}
                         />

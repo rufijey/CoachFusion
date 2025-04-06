@@ -1,0 +1,48 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - app-network
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+    depends_on:
+      - db
+    command: npm run start:dev
+    restart: always
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  db:
+    image: postgres:13
+    restart: always
+    volumes:
+      - ./frontend:/app
+      - ./tmp/db:/var/lib/postgresql/data
+    env_file:
+      - ./backend/.env
+    ports:
+      - "5433:5432"
+    command: postgres -c 'log_statement=all'
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

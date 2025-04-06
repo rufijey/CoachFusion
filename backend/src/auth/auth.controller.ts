@@ -36,8 +36,9 @@ export class AuthController {
     })
     @ApiOperation({summary: 'Login user'})
     @ApiResponse({status: 200, type: TokensDto})
-    login(@Body() loginDto: LoginDto,
-                @Headers('fingerprint') fingerprint: string): Promise<TokensDto> {
+    login(
+        @Body() loginDto: LoginDto,
+        @Headers('fingerprint') fingerprint: string): Promise<TokensDto> {
 
         return this.authService.login(loginDto, fingerprint);
     }

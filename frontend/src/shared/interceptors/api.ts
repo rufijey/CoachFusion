@@ -3,7 +3,7 @@ import { getFingerprint } from '../utils/getFingerprint.ts';
 import { logout, refresh } from '../../modules/users/store/authThunks.ts';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8000/api'
+    baseURL : 'http://localhost:3000/api'
 });
 
 let store: any;

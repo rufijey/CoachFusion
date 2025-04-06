@@ -152,9 +152,11 @@ const CoachProfile: React.FC = () => {
                     </Button>
                 </div>
             </div>
-            <Button onClick={handleAddPortfolio} variant="outlined" color="inherit" style={{ marginTop: '20px' }}>
-                Add Portfolio Item
-            </Button>
+            {user.coachProfile &&
+                <Button onClick={handleAddPortfolio} variant="outlined" color="inherit" style={{ marginTop: '20px' }}>
+                    Add Portfolio Item
+                </Button>
+            }
 
             <CoachPortfolio portfolioItems={coachProfile.portfolioItems} />
         </div>

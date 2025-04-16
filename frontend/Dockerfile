@@ -1,10 +1,19 @@
+FROM node:18 AS build
 
-FROM node:20
-
-RUN corepack enable
 WORKDIR /app
-COPY package.json yarn.lock ./
-RUN yarn install --immutable
+
+COPY ./package*.json ./
+
+RUN npm install
+
 COPY . .
 
-CMD ["yarn", "dev", "--host"]
+RUN npm run build
+
+FROM nginx:alpine
+
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

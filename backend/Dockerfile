@@ -1,5 +1,5 @@
 
-FROM node:20
+FROM node:18 AS build
 
 WORKDIR /app
 
@@ -11,4 +11,7 @@ COPY . .
 
 RUN npm run build
 
-CMD [ "npm", "run", "start:dev" ]
+EXPOSE 3000
+
+CMD ["npm", "run", "start:prod"]
+
